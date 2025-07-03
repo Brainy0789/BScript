@@ -1,5 +1,10 @@
 # BScript Syntax
 
+## Comments<br>
+````
+//You can comment your code like this! Comments even stay in the generated c files!
+````
+
 ## Printing<br>
 ````
 print "At least we have support for basic strings";
