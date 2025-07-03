@@ -14,6 +14,7 @@ class BScriptCompiler:
     def compile(self, code: str) -> str:
         lines = self.preprocess(code)
         self.c_lines = [
+            '// Generated C code from BScript',
             '#include <stdio.h>',
             '#include <string.h>',
             '',
@@ -26,9 +27,16 @@ class BScriptCompiler:
         i = 0
         while i < len(lines):
             line = lines[i].strip()
-            if not line or line.startswith('//'):
+            if line == "":
                 i += 1
                 continue
+
+            # Comment detection:
+            if re.match(r'\s*//', line):
+                self.c_lines.append(self.indent() + line.lstrip())
+                i += 1
+                continue
+
 
             # var declaration
             m = re.match(r'var\s+([a-zA-Z_]\w*);', line)
@@ -139,18 +147,7 @@ class BScriptCompiler:
         clean_lines = []
         for line in raw_lines:
             line = line.strip()
-            if not line or line.startswith('//'):
+            if not line:
                 continue
             clean_lines.append(line)
         return clean_lines
-
-
-# Example usage:
-
-code = '''
-print "Hello";
-'''
-
-compiler = BScriptCompiler()
-c_code = compiler.compile(code)
-print(c_code)

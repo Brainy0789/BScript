@@ -1,0 +1,23 @@
+// GLOBAL STRING TEST
+
+str "Hello, World!"
+
+var a;
+print str;
+
+// LOOP TEST
+
+var a;
+var b;
+
+b +;
+b +;
+b +;
+b +;
+
+(a, b) {
+    print a;
+    a +;
+}
+
+// COMMENTS SHOULD BE GENERATING INTO THE C FILE.
