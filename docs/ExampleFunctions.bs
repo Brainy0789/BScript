@@ -1,0 +1,13 @@
+//Some functions to use in BScript.
+
+//Function that takes two parameters and returns their sum
+func add x, y {
+    var w;
+
+    (w, y) {
+        x +;
+        w +;
+    }
+
+    return x;
+}

@@ -48,6 +48,24 @@ class BScriptCompiler:
                 i += 1
                 continue
 
+            # assignment: a = 123; or a = b;
+            m = re.match(r'([a-zA-Z_]\w*)\s*=\s*([a-zA-Z_]\w*|\d+);', line)
+            if m:
+                var, value = m.groups()
+                if var not in self.vars:
+                    raise Exception(f"Variable '{var}' used before declaration")
+
+                if value.isdigit():
+                    # Assign a constant number
+                    self.c_lines.append(f'{self.indent()}{var} = {int(value)} % 256;')
+                elif value in self.vars:
+                    # Assign from another variable
+                    self.c_lines.append(f'{self.indent()}{var} = {value};')
+                else:
+                    raise Exception(f"Invalid assignment value '{value}'")
+                i += 1
+                continue
+
             # increment/decrement
             m = re.match(r'([a-zA-Z_]\w*)\s*([+-]);', line)
             if m:
@@ -68,7 +86,7 @@ class BScriptCompiler:
                 if expr == 'str':
                     self.c_lines.append(f'{self.indent()}printf("%s", str);')
                 elif expr in self.vars:
-                    self.c_lines.append(f'{self.indent()}printf("%c", {expr});')
+                    self.c_lines.append(f'{self.indent()}printf("%d", {expr});')
                 else:
                     # assume string literal with quotes
                     literal = expr.strip('"').strip("'")
