@@ -1,6 +1,6 @@
 # Advanced
 
-These are advanced functions for speicial use cases.
+These are advanced functions for special use cases.
 
 ## Single String to ASCII
 
