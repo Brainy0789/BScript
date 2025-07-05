@@ -2,7 +2,7 @@
 
 Cool enough, custom functions are possible in this language. You can even return things. Nice, right?
 
-## Defining a function (X)
+## Defining a function
 
 You can define a function using
 
@@ -18,7 +18,7 @@ Simple enough, right? After a function has been defined, you can reuse these any
 myFunction 1,2; //Variables, strings, and integers supported as arguments
 ````
 
-## Returning a value (X)
+## Returning a value 
 
 You can return value using this.
 
