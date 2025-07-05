@@ -57,4 +57,4 @@ This simply sets a user input to the Single String
 input;
 ````
 
-[Next Page >](Functions.md)
+[Next Page >](functions.html)

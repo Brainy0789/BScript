@@ -2,4 +2,4 @@
 
 Under construction!
 
-[< Previous Page](Functions.md) | [Next Page >](Advanced.md) 
+[< Previous Page](functions.html) | [Next Page >](advanced.html) 

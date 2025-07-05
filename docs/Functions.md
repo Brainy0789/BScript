@@ -40,4 +40,4 @@ Functions can do a lot, and since I'm nice I'll provide some functions you can p
 
 [You can see them here!](ExampleFunctions.bs)
 
-[< Previous Page](Basics.md) | [Next Page >](ScreenFunctions.md) 
+[< Previous Page](basics.html) | [Next Page >](screenfunctions.md) 

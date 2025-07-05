@@ -21,4 +21,4 @@ revascii a
 
 (Do note the strings do not reset when you call this. You may have to call `string ""` if you want this to work correctly.)
 
-[ < Previous Page](Advanced.md)
+[ < Previous Page](screenfunctions.html)

@@ -1,5 +1,7 @@
 //Some functions to use in BScript.
 
+//Do note functions are supported in the current version of BScript.
+
 //Function that takes two parameters and returns their sum
 func add x, y {
     var w;
