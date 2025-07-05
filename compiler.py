@@ -1,4 +1,6 @@
 import re
+import sys
+import subprocess
 
 class BScriptCompiler:
     def __init__(self):
@@ -11,7 +13,7 @@ class BScriptCompiler:
     def indent(self):
         return "    " * self.indent_level
 
-    def compile(self, code: str) -> str:
+    def transpile(self, code: str) -> str:
         lines = self.preprocess(code)
         self.c_lines = [
             '// Generated C code from BScript',
@@ -169,3 +171,6 @@ class BScriptCompiler:
                 continue
             clean_lines.append(line)
         return clean_lines
+
+    def compile(self, c_file, outputFile):    
+        subprocess.run(["gcc", c_file, "-o", outputFile], check=True)

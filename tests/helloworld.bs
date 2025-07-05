@@ -1,0 +1,5 @@
+print "Hello World!";
+
+//If you look at the generated C file when compiling, you may notice something pretty cool
+
+//Every comment in this script will carry over to the C file!
