@@ -125,6 +125,6 @@ output.pack(padx=10, pady=5)
 
 tk.Button(root, text="Save Code", command=save_code).pack(pady=5)
 
-tk.Button(root, text="Compile C Code", command=compile_code).pack(pady=5)
+tk.Button(root, text="Compile Code", command=compile_code).pack(pady=5)
 
 root.mainloop()
