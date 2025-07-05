@@ -37,8 +37,18 @@ class BScriptCompiler:
 
         js_lines = [
             '// Generated JavaScript code from BScript',
+            ''
+            'function print(text) {',
+            '    const consoleEl = document.getElementById("console");',
+            '    if (consoleEl) {',
+            '        consoleEl.textContent += text + "\\n";',
+            '    } else {',
+            '        // fallback if no custom console',
+            '        console.log(text);',
+            '    }',
+            '}',
             'let str = "";',
-            '',
+            ''
         ]
         global_vars = set()
         local_vars = set()
@@ -207,11 +217,11 @@ class BScriptCompiler:
             if m:
                 expr = m.group(1).strip()
                 if expr == 'str':
-                    js_lines.append(indent() + 'console.log(str);')
+                    js_lines.append(indent() + 'print(str);')
                 elif expr.isdigit():
-                    js_lines.append(indent() + f'console.log({expr});')
+                    js_lines.append(indent() + f'print({expr});')
                 else:
-                    js_lines.append(indent() + f'console.log({expr});')
+                    js_lines.append(indent() + f'print({expr});')
                 i += 1
                 continue
 
@@ -224,7 +234,7 @@ class BScriptCompiler:
                 continue
 
             # Input (simplified): input
-            if line == 'input':
+            if line == 'input;':
                 js_lines.append(indent() + 'str = prompt("Input:") || "";')
                 i += 1
                 continue
@@ -491,7 +501,7 @@ class BScriptCompiler:
                     continue
 
                 # Input
-                if line == 'input':
+                if line == 'input;':
                     if self.in_function:
                         self.c_lines.append(f'{self.indent()}fgets(str, sizeof(str), stdin);')
                     else:

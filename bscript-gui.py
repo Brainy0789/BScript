@@ -47,22 +47,34 @@ def compile_js_code(js_code):
     script_path = os.path.join(folder, "script.js")
     index_path = os.path.join(folder, "index.html")
 
+    
+
     # Write script.js
     with open(script_path, "w") as f:
         f.write(js_code)
 
     # Write index.html that links script.js
     html_content = """<!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8" />
-<title>BScript JS Output</title>
+  <title>BScript Output</title>
+  <style>
+    #console {
+      background: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-<script src="script.js"></script>
+  <div id="console"></div>
+  <script src="script.js"></script>
 </body>
 </html>
 """
+
     with open(index_path, "w") as f:
         f.write(html_content)
 
