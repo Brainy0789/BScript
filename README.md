@@ -1,12 +1,8 @@
 # BScript
 
-BScript is a coding language that is terrible.
+BScript is a simple, lightweight 8-bit coding language.
 
 [Read the documentation here.](https://brainy0789.github.io/BScript/basics.html)
-
-All you get is simple variables that can only be added or subtracted to (only one), basic loops, really nothings else. It's probably easier than Brainfuck, though. 
-
-Wow, that description is a little outdated.
 
 ## Installation
 
