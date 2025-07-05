@@ -1,8 +1,7 @@
 name: Build BScript GUI
 
 on:
-  workflow_run:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build-windows:
