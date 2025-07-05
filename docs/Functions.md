@@ -28,12 +28,10 @@ func addOne number {
 }
 ````
 
-Returned functions can be set to as variables or the Single String.
+Returned functions can be set to as variables.
 
 ````
 a=addOne 1; //a equals 2 now.
-
-str someStringFunction str; //This does whatever this string function does
 ````
 
 Functions can do a lot, and since I'm nice I'll provide some functions you can put into your own code!
