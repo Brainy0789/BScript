@@ -1,0 +1,54 @@
+body {
+    background-color: #000000;
+    color: #00FF00;
+    font-family: 'Courier New', Courier, monospace;
+    margin: 0;
+    padding: 2rem;
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    color: #39FF14;
+    border-bottom: 1px solid #39FF14;
+    padding-bottom: 0.25em;
+    margin-top: 2rem;
+}
+
+a {
+    color: #00FFFF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+code, pre {
+    background-color: #111;
+    color: #0f0;
+    padding: 0.5em;
+    display: block;
+    overflow-x: auto;
+    border-left: 4px solid #0f0;
+    margin-bottom: 1em;
+}
+
+button {
+    background-color: #00FF00;
+    color: #000;
+    border: none;
+    padding: 0.5em 1em;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 1em;
+    transition: 0.2s ease;
+}
+
+button:hover {
+    background-color: #39FF14;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+}
