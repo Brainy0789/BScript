@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>BScript Docs</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="assets/icon.png">
+</head>
+<body>
+
+<div id="content">Loading...</div>
+
+<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+<script>
+  async function loadMarkdown(url) {
+    const res = await fetch(url);
+    const mdText = await res.text();
+
+    const md = markdownit({
+      html: true,
+      linkify: true,
+      typographer: true
+  })
+    const result = md.render(mdText);
+
+    document.getElementById('content').innerHTML = result;
+  }
+
+  // Change 'README.md' to your markdown filename or path
+  loadMarkdown('ExampleFunctions.md');
+</script>
+
+</body>
+</html>
+

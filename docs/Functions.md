@@ -36,6 +36,6 @@ a=addOne 1; //a equals 2 now.
 
 Functions can do a lot, and since I'm nice I'll provide some functions you can put into your own code!
 
-[You can see them here!](ExampleFunctions.bs)
+[You can see them here!](examplefunctions.html)
 
 [< Previous Page](basics.html) | [Next Page >](screenfunctions.html) 
