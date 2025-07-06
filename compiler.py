@@ -568,11 +568,12 @@ class BScriptCompiler:
     def preprocess(self, code: str):
         return [line.strip() for line in code.split('\n') if line.strip()]
     
-    def compile(self, output_name: str, source_file: str):
-        if not output_name.endswith('.c'):
-            raise ValueError("Output file must have a .c extension")
-        
-        # Compile the C code using gcc
+    def compile(self, source_file: str, output_name: str):
+        if not output_name or not source_file:
+            raise ValueError("Source file and output name must be provided")
+        if not output_name.endswith('.exe') and not output_name.endswith('.out') and not output_name.endswith(''):  
+            # optional check, you can remove or adjust based on platform
+            pass
         try:
             subprocess.run(["gcc", source_file, "-o", output_name], check=True)
         except subprocess.CalledProcessError as e:
