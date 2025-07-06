@@ -34,7 +34,7 @@ a=b; //Setting to another variable
 a +; //Addition by 1
 b -; //Subtraction by 1
 ````
-(Do note that if a variables goes above the number 256, it resets to 0)
+(Do note that if a variables goes above the number 255, it wraps around to 0)
 
 ## Loops
 ````
