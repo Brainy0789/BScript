@@ -4,7 +4,7 @@ These are advanced functions for special use cases.
 
 ## Single String to ASCII
 
-Sets the the ASCII value of the index of the string to a variable.
+Sets the ASCII value of the index of the string to a variable.
 
 ````
 ascii 0,a
