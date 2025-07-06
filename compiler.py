@@ -292,6 +292,7 @@ class BScriptCompiler:
                 '// Generated C code from BScript',
                 '#include <stdio.h>',
                 '#include <string.h>',
+                'char str[256] = "";',
                 ''
             ]
             self.global_vars.clear()
@@ -554,7 +555,6 @@ class BScriptCompiler:
 
             # Then main function
             output.append("int main() {")
-            output.append("    char str[256] = \"\";")
             output.extend(self.main_code)
             output.append("    return 0;")
             output.append("}")
@@ -574,7 +574,7 @@ class BScriptCompiler:
         
         # Compile the C code using gcc
         try:
-            subprocess.run(['gcc', '-o', output_name, source_file], check=True)
+            subprocess.run(["gcc", source_file, "-o", output_name], check=True)
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Compilation failed: {e}")
         print(f"Compiled {source_file} to {output_name}")

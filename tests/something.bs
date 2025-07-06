@@ -1,0 +1,68 @@
+func add x, y {
+    var w;
+
+    (w, y) {
+        x +;
+        w +;
+    }
+
+    return x;
+}
+
+func subtract x, y {
+    var w;
+
+    (w, y) {
+        x -;
+        w +;
+    }
+
+    return x;
+}
+
+func toInt {
+    var a;
+    var b;
+    var result;
+
+    ascii 0, a;
+    ascii 1, b;
+
+    // Convert ASCII to digits
+
+    var FORTYEIGHT;
+
+    a = subtract a,FORTYEIGHT;
+    b = subtract b,FORTYEIGHT;
+
+    // Multiply a by 10 (a * 10)
+    a = add a,a; // *2
+    a = add a,a; // *4
+    a = add a,a; // *8
+    var temp;
+    a = add a,a; // now a * 16
+    a = add a,a;  // too much? reset
+
+    // Instead let's do:
+    // a * 10 = (a * 8) + (a * 2)
+    a = add a,a;      // a*2
+    a = add a,a;
+    a = add a,a;       // a*8
+    a = add a,temp;      // a*10
+
+    result = add a,b;
+    return result;
+}
+
+input;
+var i;
+i = toInt;
+input;
+var j;
+j = toInt;
+
+var k;
+
+k = add i,j;
+
+print k;
