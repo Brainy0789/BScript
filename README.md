@@ -1,3 +1,5 @@
+![GitHub repo size](https://img.shields.io/github/repo-size/Brainy0789/BScript)
+
 # BScript
 
 BScript is a simple, lightweight 8-bit coding language.
