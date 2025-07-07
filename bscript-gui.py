@@ -118,6 +118,9 @@ def compile_code():
 root = tk.Tk()
 root.title("BScript Compiler GUI")
 
+icon = tk.PhotoImage(file="assets/icon.png")
+root.iconphoto(True, icon)
+
 tk.Button(root, text="Load BScript File", command=load_bs_file).pack(pady=5)
 
 tk.Label(root, text="BScript Code:").pack(anchor="w")
