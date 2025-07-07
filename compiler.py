@@ -296,6 +296,8 @@ class BScriptCompiler:
                 '#include <stdio.h>',
                 '#include <string.h>',
                 '#include <SDL.h>',  # Include SDL for windowing
+                'SDL_Window* window;',
+                'SDL_Renderer* renderer;',
                 '',
                 # Declare global string variable
                 'char str[256] = "";',
@@ -312,6 +314,7 @@ class BScriptCompiler:
             self.indent_level = 1
             self.block_stack.clear()
             self.vars.clear()
+            self.draw_code = []
             window_width = 640
             window_height = 480
             window_title = "BScript Window"
@@ -556,6 +559,23 @@ class BScriptCompiler:
                     i += 1
                     continue
 
+                # Pixel drawing command
+                m = re.match(r'pixel\s+(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+);', line)
+                if m:
+                    x, y, r, g, b = map(int, m.groups())
+                    draw_code = [
+                        f'{self.indent()}SDL_SetRenderDrawColor(renderer, {r}, {g}, {b}, 255);',
+                        f'{self.indent()}SDL_Rect rect = {{ {x} * 3, {y} * 3, 3, 3 }};',
+                        f'{self.indent()}SDL_RenderFillRect(renderer, &rect);'
+                    ]
+                    if self.in_function:
+                        self.c_lines.extend(draw_code)
+                    else:
+                        self.draw_code.extend(draw_code)
+                    i += 1
+                    continue
+
+
                 # windowSize command
                 m = re.match(r'windowSize\s+(\d+)\s*,\s*(\d+);', line)
                 if m:
@@ -598,6 +618,13 @@ class BScriptCompiler:
                         "        SDL_Quit();",
                         "        return 1;",
                         "    }",
+                        "    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);",
+                        "    if (!renderer) {",
+                        "        printf(\"SDL_CreateRenderer Error: %s\\n\", SDL_GetError());",
+                        "        SDL_DestroyWindow(window);",
+                        "        SDL_Quit();",
+                        "        return 1;",
+                        "    }",
                         "    SDL_Event e;",
                         "    int running = 1;",
                         "    while (running) {",
@@ -606,15 +633,25 @@ class BScriptCompiler:
                         "                running = 0;",
                         "            }",
                         "        }",
+                        "        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);",
+                        "        SDL_RenderClear(renderer);",
+                        "        // Begin drawing section",
+                        "        // <-- BScript pixel draw commands go here -->"
+                    ]
+                    sdl_code2 = [
+                        "        // End drawing section",
+                        "        SDL_RenderPresent(renderer);",
                         "        SDL_Delay(16);",
                         "    }",
+                        "    SDL_DestroyRenderer(renderer);",
                         "    SDL_DestroyWindow(window);",
                         "    SDL_Quit();"
                     ]
-                    if self.in_function:
-                        self.c_lines.extend(f'{self.indent()}{stmt}' for stmt in sdl_code)
-                    else:
-                        self.main_code.extend(f'{self.indent()}{stmt}' for stmt in sdl_code)
+
+                   #if self.in_function:
+                    #self.c_lines.extend(f'{self.indent()}{stmt}' for stmt in sdl_code)
+                    #else:
+                    #    self.main_code.extend(f'{self.indent()}{stmt}' for stmt in sdl_code)
                     i += 1
                     continue
 
@@ -632,8 +669,12 @@ class BScriptCompiler:
                 output.append("    return 0;")
                 output.append("}")
             else:
+                output.extend(sdl_code)
                 # If windowed, we already have the main function in sdl_code
+                output.extend(self.draw_code)
+                output.append("        // End of BScript pixel draw commands")
                 output.extend(self.main_code)
+                output.extend(sdl_code2)
                 output.append("}")
 
             return '\n'.join(output)

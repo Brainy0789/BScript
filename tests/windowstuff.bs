@@ -1,0 +1,5 @@
+windowSize 50,50;
+windowTitle "Pixel Test!";
+window;
+
+pixel 25,25,255,255,255;
