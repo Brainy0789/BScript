@@ -295,8 +295,10 @@ class BScriptCompiler:
                 '',
                 '#include <stdio.h>',
                 '#include <string.h>',
+                '#include <SDL.h>',  # Include SDL for windowing
+                '',
+                # Declare global string variable
                 'char str[256] = "";',
-                '#include <SDL.h>',
                 ''
             ]
             self.global_vars.clear()
@@ -310,6 +312,9 @@ class BScriptCompiler:
             self.indent_level = 1
             self.block_stack.clear()
             self.vars.clear()
+            window_width = 640
+            window_height = 480
+            window_title = "BScript Window"
 
             i = 0
             while i < len(lines):
@@ -551,28 +556,41 @@ class BScriptCompiler:
                     i += 1
                     continue
 
-                # Window
+                # windowSize command
+                m = re.match(r'windowSize\s+(\d+)\s*,\s*(\d+);', line)
+                if m:
+                    window_width = int(m.group(1))
+                    window_height = int(m.group(2))
+                    i += 1
+                    continue
+
+                # windowTitle command
+                m = re.match(r'windowTitle\s+"([^"]*)";', line)
+                if m:
+                    window_title = m.group(1)
+                    i += 1
+                    continue
+
+                # window command
                 if line == 'window;':
                     if windowed:
                         raise Exception("Window already created, cannot create another")
-                        continue
-            
                     windowed = True
+
                     sdl_code = [
                         "int main(int argc, char* argv[]) {",
                         "    if (SDL_Init(SDL_INIT_VIDEO) != 0) {",
                         "        printf(\"SDL_Init Error: %s\\n\", SDL_GetError());",
                         "        return 1;",
                         "    }",
-                        "    SDL_Window* window = SDL_CreateWindow(\"BScript Window\",",
+                        f"    SDL_Window* window = SDL_CreateWindow(\"{window_title}\",",
                         "        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,",
-                        "        640, 480, SDL_WINDOW_SHOWN);",
+                        f"        {window_width}, {window_height}, SDL_WINDOW_SHOWN);",
                         "    if (!window) {",
                         "        printf(\"SDL_CreateWindow Error: %s\\n\", SDL_GetError());",
                         "        SDL_Quit();",
                         "        return 1;",
                         "    }",
-
                         "    SDL_Event e;",
                         "    int running = 1;",
                         "    while (running) {",
@@ -583,7 +601,6 @@ class BScriptCompiler:
                         "        }",
                         "        SDL_Delay(16);",
                         "    }",
-
                         "    SDL_DestroyWindow(window);",
                         "    SDL_Quit();"
                     ]
