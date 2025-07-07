@@ -1,5 +1,6 @@
 import re
 import subprocess
+import shlex
 
 class BScriptCompiler:
     def __init__(self):
@@ -285,14 +286,17 @@ class BScriptCompiler:
 
 
     def transpile(self, code: str, lang: str = "c") -> str:
+        windowed = False
         lines = self.preprocess(code)
         lang = lang.lower()
         if lang == "c":
             self.c_lines = [
                 '// Generated C code from BScript',
+                '',
                 '#include <stdio.h>',
                 '#include <string.h>',
                 'char str[256] = "";',
+                '#include <SDL.h>',
                 ''
             ]
             self.global_vars.clear()
@@ -547,6 +551,49 @@ class BScriptCompiler:
                     i += 1
                     continue
 
+                # Window
+                if line == 'window;':
+                    if windowed:
+                        raise Exception("Window already created, cannot create another")
+                        continue
+            
+                    windowed = True
+                    sdl_code = [
+                        "int main(int argc, char* argv[]) {",
+                        "    if (SDL_Init(SDL_INIT_VIDEO) != 0) {",
+                        "        printf(\"SDL_Init Error: %s\\n\", SDL_GetError());",
+                        "        return 1;",
+                        "    }",
+                        "    SDL_Window* window = SDL_CreateWindow(\"BScript Window\",",
+                        "        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,",
+                        "        640, 480, SDL_WINDOW_SHOWN);",
+                        "    if (!window) {",
+                        "        printf(\"SDL_CreateWindow Error: %s\\n\", SDL_GetError());",
+                        "        SDL_Quit();",
+                        "        return 1;",
+                        "    }",
+
+                        "    SDL_Event e;",
+                        "    int running = 1;",
+                        "    while (running) {",
+                        "        while (SDL_PollEvent(&e)) {",
+                        "            if (e.type == SDL_QUIT) {",
+                        "                running = 0;",
+                        "            }",
+                        "        }",
+                        "        SDL_Delay(16);",
+                        "    }",
+
+                        "    SDL_DestroyWindow(window);",
+                        "    SDL_Quit();"
+                    ]
+                    if self.in_function:
+                        self.c_lines.extend(f'{self.indent()}{stmt}' for stmt in sdl_code)
+                    else:
+                        self.main_code.extend(f'{self.indent()}{stmt}' for stmt in sdl_code)
+                    i += 1
+                    continue
+
                 raise Exception(f"Unknown or unsupported command: {line}")
 
             # Compose full output
@@ -554,10 +601,16 @@ class BScriptCompiler:
             output = self.c_lines + self.global_var_decls
 
             # Then main function
-            output.append("int main() {")
-            output.extend(self.main_code)
-            output.append("    return 0;")
-            output.append("}")
+
+            if not windowed:
+                output.append("int main() {")
+                output.extend(self.main_code)
+                output.append("    return 0;")
+                output.append("}")
+            else:
+                # If windowed, we already have the main function in sdl_code
+                output.extend(self.main_code)
+                output.append("}")
 
             return '\n'.join(output)
         elif lang == "js":
@@ -571,11 +624,30 @@ class BScriptCompiler:
     def compile(self, source_file: str, output_name: str):
         if not output_name or not source_file:
             raise ValueError("Source file and output name must be provided")
-        if not output_name.endswith('.exe') and not output_name.endswith('.out') and not output_name.endswith(''):  
-            # optional check, you can remove or adjust based on platform
-            pass
+        
+        # Read the source to check if it uses SDL
+        with open(source_file, 'r', encoding='utf-8') as f:
+            source_code = f.read()
+
+        # Determine if SDL is needed
+        uses_sdl = 'SDL_CreateWindow' in source_code or 'window;' in source_code
+
+        # Set up compilation command
+        compile_cmd = ["gcc", source_file, "-o", output_name]
+
+        if uses_sdl:
+            try:
+                # Get SDL compiler flags safely
+                sdl_flags = subprocess.check_output(["sdl2-config", "--cflags", "--libs"])
+                compile_cmd += shlex.split(sdl_flags.decode())
+            except subprocess.CalledProcessError:
+                raise RuntimeError("Failed to retrieve SDL2 compiler flags via sdl2-config")
+
+        # Run compilation
         try:
-            subprocess.run(["gcc", source_file, "-o", output_name], check=True)
+            subprocess.run(compile_cmd, check=True)
         except subprocess.CalledProcessError as e:
             raise RuntimeError(f"Compilation failed: {e}")
+        
         print(f"Compiled {source_file} to {output_name}")
+
