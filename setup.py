@@ -47,7 +47,7 @@ def main():
     config_file = get_shell_config_file()
     print(f"Detected shell config file: {config_file}")
 
-    alias_line = f'alias bsc="python3 {path}/bscript.py"'
+    alias_line = f'alias bsc="python3 {path}/bscript-cli.py"'
     path_line = 'export PATH="$HOME/devtools/bin:$PATH"'
 
     print(f"Adding alias and PATH export to {config_file}...")
