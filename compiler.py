@@ -559,10 +559,17 @@ class BScriptCompiler:
                 # windowSize command
                 m = re.match(r'windowSize\s+(\d+)\s*,\s*(\d+);', line)
                 if m:
-                    window_width = int(m.group(1))
-                    window_height = int(m.group(2))
+                    width = int(m.group(1))
+                    height = int(m.group(2))
+
+                    if not (0 <= width <= 255) or not (0 <= height <= 255):
+                        raise Exception(f"Invalid window size: {width}x{height}. Each dimension must be between 0 and 255 pixels.")
+
+                    window_width = width*3
+                    window_height = height*3
                     i += 1
                     continue
+
 
                 # windowTitle command
                 m = re.match(r'windowTitle\s+"([^"]*)";', line)
@@ -667,4 +674,3 @@ class BScriptCompiler:
             raise RuntimeError(f"Compilation failed: {e}")
         
         print(f"Compiled {source_file} to {output_name}")
-
