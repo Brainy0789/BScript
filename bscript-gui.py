@@ -4,6 +4,7 @@ import compiler as c
 import os
 import tempfile
 import subprocess
+import pixeleditor
 
 def transpile_code():
     code = code_input.get("1.0", tk.END)
@@ -115,12 +116,15 @@ def compile_code():
         messagebox.showwarning("Compile Not Supported", f"Compile not supported for language: {lang}")
 
 
+
 root = tk.Tk()
 root.title("BScript Compiler GUI")
 
 icon = tk.PhotoImage(file="assets/icon.png")
 root.iconphoto(True, icon)
 
+tk.Button(root, text="Pixel Editor (Beta)", command=pixeleditor.pixelEditor).pack(pady=5)
+tk.Label(root, text="It is not recommended to write code using this editor,\nuse an actual IDE for that!").pack(pady=10)
 tk.Button(root, text="Load BScript File", command=load_bs_file).pack(pady=5)
 
 tk.Label(root, text="BScript Code:").pack(anchor="w")

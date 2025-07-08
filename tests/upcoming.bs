@@ -1,0 +1,56 @@
+//If/elseif/else
+
+if a == b {
+   //Code stuff lol
+}
+elseif a == c {
+   //Other code stuff lol
+}
+else {
+   //If all else fails, you can always rely on else.
+}
+
+//switch/case
+
+switch a {
+    case 0 {
+        print "a equals 0!";
+    }
+    case 1 {
+        print "a equals 1!";
+    }
+    default {
+        print "Whatever else a equals!
+    }
+}
+
+//onKey function (key is a read-only string)
+
+func onKey key {
+    if key == "A" {
+        print "A pressed";
+    }
+
+    //or more generally
+
+    print key + " pressed";
+}
+
+//onMouseDown function (x,y are integers)
+
+func onMouseDown x,y {
+    print x;
+    print y;
+}
+
+//Window commands
+
+windowTitle "Test";
+windowSize 300,300;
+window;
+
+clearScreen 0,255,0; //makes green screen.
+
+rect 0,0,150,150,255,0,0; //draw red box
+
+pixel 150,150,0,0,255 // draws blue pixel in the center of the screen 

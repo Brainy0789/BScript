@@ -318,6 +318,8 @@ class BScriptCompiler:
             window_width = 640
             window_height = 480
             window_title = "BScript Window"
+            rect = False  # Track if rect command was used
+            rects = 0
 
             i = 0
             while i < len(lines):
@@ -560,18 +562,42 @@ class BScriptCompiler:
                     continue
 
                 # Pixel drawing command
-                m = re.match(r'pixel\s+(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+);', line)
+                m = re.match(r'pixel\s+(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+);', line)
                 if m:
-                    x, y, r, g, b = map(int, m.groups())
-                    draw_code = [
-                        f'{self.indent()}SDL_SetRenderDrawColor(renderer, {r}, {g}, {b}, 255);',
-                        f'{self.indent()}SDL_Rect rect = {{ {x} * 3, {y} * 3, 3, 3 }};',
-                        f'{self.indent()}SDL_RenderFillRect(renderer, &rect);'
-                    ]
-                    if self.in_function:
-                        self.c_lines.extend(draw_code)
+                    if windowed:
+                        x, y, r, g, b, s = map(int, m.groups())
+                        rects += 1
+                        draw_code = [
+                                f'{self.indent()}SDL_SetRenderDrawColor(renderer, {r}, {g}, {b}, 255);',
+                                f'{self.indent()}SDL_Rect rect{rects} = {{ {x} * {s}, {y} * {s}, {s}, {s} }};',
+                                f'{self.indent()}SDL_RenderFillRect(renderer, &rect{rects});'
+                            ]
+                        if self.in_function:
+                            self.c_lines.extend(draw_code)
+                        else:
+                            self.draw_code.extend(draw_code)
                     else:
-                        self.draw_code.extend(draw_code)
+                        raise Exception("Cannot use 'pixel' without first creating a window using the 'window;' command.")
+                    i += 1
+                    continue
+
+                # rect command
+                m = re.match(r'rect\s+(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+);', line)
+                if m:
+                    if windowed:
+                        x, y, wx, wy, r, g, b = map(int, m.groups())
+                        rects += 1
+                        draw_code = [
+                            f'{self.indent()}SDL_SetRenderDrawColor(renderer, {r}, {g}, {b}, 255);',
+                            f'{self.indent()}SDL_Rect rect{rects} = {{ {x}, {y}, {wx}, {wy} }};',
+                            f'{self.indent()}SDL_RenderFillRect(renderer, &rect{rects});'
+                        ]
+                        if self.in_function:
+                            self.c_lines.extend(draw_code)
+                        else:
+                            self.draw_code.extend(draw_code)
+                    else:
+                        raise Exception("Cannot use 'rect' without first creating a window using the 'window;' command.")
                     i += 1
                     continue
 
@@ -608,11 +634,11 @@ class BScriptCompiler:
                     width = int(m.group(1))
                     height = int(m.group(2))
 
-                    if not (0 <= width <= 255) or not (0 <= height <= 255):
-                        raise Exception(f"Invalid window size: {width}x{height}. Each dimension must be between 0 and 255 pixels.")
+                    if not (0 <= width) or not (0 <= height):
+                        raise Exception(f"Invalid window size: {width}x{height}. Each dimension must be above 0 pixels.")
 
-                    window_width = width*3
-                    window_height = height*3
+                    window_width = width
+                    window_height = height
                     i += 1
                     continue
 
