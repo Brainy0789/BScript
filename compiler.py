@@ -575,6 +575,32 @@ class BScriptCompiler:
                     i += 1
                     continue
 
+                # clearScreen r,g,b;
+                m = re.match(r'clearScreen\s+(\d+)\s*,\s*(\d+)\s*,\s*(\d+);', line)
+                if m:
+                    if not windowed:
+                        raise Exception("Cannot use 'clearScreen' without first creating a window using the 'window;' command.")
+                    
+                    r, g, b = map(int, m.groups())
+
+                    # Clamp RGB values
+                    if not all(0 <= val <= 255 for val in (r, g, b)):
+                        raise Exception("clearScreen RGB values must be between 0 and 255")
+
+                    draw_code = [
+                        f'SDL_SetRenderDrawColor(renderer, {r}, {g}, {b}, 255);',
+                        'SDL_RenderClear(renderer);'
+                    ]
+
+                    if self.in_function:
+                        self.c_lines.extend(f'{self.indent()}{stmt}' for stmt in draw_code)
+                    else:
+                        self.main_code.extend(f'{self.indent()}{stmt}' for stmt in draw_code)
+
+                    i += 1
+                    continue
+
+
 
                 # windowSize command
                 m = re.match(r'windowSize\s+(\d+)\s*,\s*(\d+);', line)
