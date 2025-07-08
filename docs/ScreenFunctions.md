@@ -1,6 +1,6 @@
 # Screen Functions
 
-## Creating Windows
+## Creating Windows (X)
 
 ````
 window;
@@ -8,7 +8,7 @@ window;
 
 Running this creates a window. Simple as that. Before you run this command, you'll may want to use a couple other commands
 
-## Window Parameters
+## Window Parameters (X)
 
 ````
 windowSize 1280,720;
